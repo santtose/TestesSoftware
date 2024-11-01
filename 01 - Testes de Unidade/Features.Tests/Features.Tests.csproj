@@ -24,8 +24,4 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="01 - Traits\" />
-  </ItemGroup>
-
 </Project>
