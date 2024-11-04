@@ -62,6 +62,7 @@ namespace Features.Tests
             var clienteRepo = new Mock<IClienteRepository>();
             var mediatr = new Mock<IMediator>();
 
+            // Ensinar o metodo a fazer algo que eu quero
             clienteRepo.Setup(c => c.ObterTodos())
                 .Returns(_clienteTestsBogus.ObterClientesVariados());
 
