@@ -24,4 +24,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="02 - Fixtures\" />
+  </ItemGroup>
+
 </Project>
