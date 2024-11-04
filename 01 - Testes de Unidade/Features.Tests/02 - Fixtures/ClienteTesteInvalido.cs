@@ -1,5 +1,6 @@
 ﻿namespace Features.Tests._02___Fixtures
 {
+    [Collection(nameof(ClienteCollection))]
     public class ClienteTesteInvalido
     {
         private readonly ClienteTestsFixture _clienteTestsFixture;

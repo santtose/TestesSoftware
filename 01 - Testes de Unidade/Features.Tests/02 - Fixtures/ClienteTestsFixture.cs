@@ -2,6 +2,7 @@
 
 namespace Features.Tests._02___Fixtures
 {
+    // Coleção de testes. Deve ser injetada nas classes que usara os objetos
     [CollectionDefinition(nameof(ClienteCollection))]
     public class ClienteCollection : ICollectionFixture<ClienteTestsFixture>
     { }
