@@ -3,7 +3,7 @@ using Bogus;
 using Features.Clientes;
 using Moq.AutoMock;
 
-namespace Features.Tests._06___AutoMock
+namespace Features.Tests
 {
     [CollectionDefinition(nameof(ClienteAutoMockerCollection))]
     public class ClienteAutoMockerCollection : ICollectionFixture<ClienteTestsAutoMockerFixture>

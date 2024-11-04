@@ -1,9 +1,8 @@
 ﻿using Features.Clientes;
-using Features.Tests._04___Dados_Humanos;
 using MediatR;
 using Moq;
 
-namespace Features.Tests._05___Mock
+namespace Features.Tests
 {
     [Collection(nameof(ClienteBogusCollection))]
     public class ClienteServiceTests

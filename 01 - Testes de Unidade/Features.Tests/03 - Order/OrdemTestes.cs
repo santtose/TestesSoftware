@@ -1,4 +1,4 @@
-﻿namespace Features.Tests._03___Order
+﻿namespace Features.Tests
 {
     [TestCaseOrderer("Features.Tests.PriorityOrderer", "Features.Tests")]
     public class OrdemTestes

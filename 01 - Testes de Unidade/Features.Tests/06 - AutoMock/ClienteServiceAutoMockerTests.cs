@@ -1,10 +1,9 @@
 ﻿using Features.Clientes;
-using Features.Tests._04___Dados_Humanos;
 using MediatR;
 using Moq.AutoMock;
 using Moq;
 
-namespace Features.Tests._06___AutoMock
+namespace Features.Tests
 {
     [Collection(nameof(ClienteBogusCollection))]
     public class ClienteServiceAutoMockerTests

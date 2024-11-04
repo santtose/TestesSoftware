@@ -1,4 +1,4 @@
-﻿namespace Features.Tests._04___Dados_Humanos
+﻿namespace Features.Tests
 {
     [Collection(nameof(ClienteBogusCollection))]
     public class ClienteBogusTests

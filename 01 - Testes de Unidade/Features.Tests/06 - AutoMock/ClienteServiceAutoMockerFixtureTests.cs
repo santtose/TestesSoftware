@@ -2,7 +2,7 @@
 using MediatR;
 using Moq;
 
-namespace Features.Tests._06___AutoMock
+namespace Features.Tests
 {
     [Collection(nameof(ClienteAutoMockerCollection))]
     public class ClienteServiceAutoMockerFixtureTests

@@ -1,6 +1,6 @@
 ﻿using Features.Clientes;
 
-namespace Features.Tests._02___Fixtures
+namespace Features.Tests
 {
     // Coleção de testes. Deve ser injetada nas classes que usara os objetos
     [CollectionDefinition(nameof(ClienteCollection))]
