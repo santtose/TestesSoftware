@@ -1,7 +1,7 @@
 ﻿using Features.Core;
 using FluentAssertions;
 
-namespace Features.Tests._09___Code_Coverage
+namespace Features.Tests
 {
     public class CpfValidationTests
     {
