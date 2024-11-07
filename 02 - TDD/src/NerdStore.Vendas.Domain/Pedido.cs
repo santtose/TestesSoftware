@@ -16,20 +16,17 @@ namespace NerdStore.Vendas.Domain
         public PedidoStatus PedidoStatus { get; private set; }
 
         private readonly List<PedidoItem> _pedidoItems;
-        public IReadOnlyCollection<PedidoItem> PedidoItems => _pedidoItems;
-     
-        public void CalcularValorPedido()
-        {
-            ValorTotal = PedidoItems.Sum(i => i.CalcularValor());
-        }
+        public IReadOnlyCollection<PedidoItem> PedidoItems => _pedidoItems;    
+        
 
         public void AdicionarItem(PedidoItem pedidoItem)
         {
-            if (pedidoItem.Quantidade > MAX_UNIDADES_ITEM) throw new DomainException($"Máximo de {MAX_UNIDADES_ITEM} unidades por produto.");
+            ValidarQuantidadeItemPermitida(pedidoItem);
 
-            if (_pedidoItems.Any(p => p.ProdutoId == pedidoItem.ProdutoId))
+            if (PedidoItemExistente(pedidoItem))
             {
                 var itemExistente = _pedidoItems.FirstOrDefault(p => p.ProdutoId == pedidoItem.ProdutoId);
+
                 itemExistente.AdicionarUnidades(pedidoItem.Quantidade);
                 pedidoItem = itemExistente;
 
@@ -37,6 +34,28 @@ namespace NerdStore.Vendas.Domain
             }
             _pedidoItems.Add(pedidoItem);
             CalcularValorPedido();
+        }
+
+        public void CalcularValorPedido()
+        {
+            ValorTotal = PedidoItems.Sum(i => i.CalcularValor());
+        }
+
+        public bool PedidoItemExistente(PedidoItem item)
+        {
+            return _pedidoItems.Any(p => p.ProdutoId == item.ProdutoId);
+        }
+
+        private void ValidarQuantidadeItemPermitida(PedidoItem item)
+        {
+            var quantidadeItems = item.Quantidade;
+            if (PedidoItemExistente(item))
+            {
+                var itemExistente = _pedidoItems.FirstOrDefault(p => p.ProdutoId == item.ProdutoId);
+                quantidadeItems += itemExistente.Quantidade;
+            }
+
+            if (quantidadeItems > MAX_UNIDADES_ITEM) throw new DomainException($"Máximo de {MAX_UNIDADES_ITEM} unidades por produto.");
         }
 
         public void TornarRascunho()
