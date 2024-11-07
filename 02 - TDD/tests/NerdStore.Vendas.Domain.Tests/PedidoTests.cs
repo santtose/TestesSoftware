@@ -4,8 +4,8 @@ namespace NerdStore.Vendas.Domain.Tests
 {
     public class PedidoTests
     {
-        [Fact(DisplayName = "Adicionar Item Pedido Vazio")]
-        [Trait("Categoria", "Pedido Testes")]
+        [Fact(DisplayName = "Adicionar Item Novo Pedido")]
+        [Trait("Categoria", "Vendas - Pedido")]
         public void AdicionarItemPedido_NovoPedido_DeveAtualizarValor()
         {
             // Arrange
