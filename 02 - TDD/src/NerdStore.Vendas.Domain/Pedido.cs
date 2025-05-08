@@ -7,10 +7,6 @@ namespace NerdStore.Vendas.Domain
     {
         public static int MAX_UNIDADES_ITEM => 15;
         public static int MIN_UNIDADES_ITEM => 1;
-        protected Pedido()
-        {
-            _pedidoItems = new List<PedidoItem>();
-        }
 
         public int Codigo { get; private set; }
         public Guid ClienteId { get; private set; }
@@ -23,58 +19,23 @@ namespace NerdStore.Vendas.Domain
         public Voucher Voucher { get; private set; }
 
         private readonly List<PedidoItem> _pedidoItems;
-        public IReadOnlyCollection<PedidoItem> PedidoItems => _pedidoItems;    
-        
+        public IReadOnlyCollection<PedidoItem> PedidoItems => _pedidoItems;
+
+        protected Pedido()
+        {
+            _pedidoItems = new List<PedidoItem>();
+        }
+
         public ValidationResult AplicarVoucher(Voucher voucher)
         {
-            var result = voucher.ValidarSeAplicavel();
-            if (!result.IsValid) return result;
+            var validationResult = voucher.ValidarSeAplicavel();
+            if (!validationResult.IsValid) return validationResult;
 
             Voucher = voucher;
             VoucherUtilizado = true;
-
-            CalcularValorTotalDesconto();
-
-            return result;
-        }
-
-        public void AdicionarItem(PedidoItem pedidoItem)
-        {
-            ValidarQuantidadeItemPermitida(pedidoItem);
-
-            if (PedidoItemExistente(pedidoItem))
-            {
-                var itemExistente = _pedidoItems.FirstOrDefault(p => p.ProdutoId == pedidoItem.ProdutoId);
-
-                itemExistente.AdicionarUnidades(pedidoItem.Quantidade);
-                pedidoItem = itemExistente;
-
-                _pedidoItems.Remove(pedidoItem);
-            }
-            _pedidoItems.Add(pedidoItem);
             CalcularValorPedido();
-        }
 
-        public void AtualizarItem(PedidoItem pedidoItem)
-        {
-            ValidarPedidoItemInexistente(pedidoItem);
-            ValidarQuantidadeItemPermitida(pedidoItem);
-
-            var itemExistente = PedidoItems.FirstOrDefault(p => p.ProdutoId == pedidoItem.ProdutoId);
-
-            _pedidoItems.Remove(itemExistente);
-            _pedidoItems.Add(pedidoItem);
-
-            CalcularValorPedido();
-        }
-
-        public void RemoverItem(PedidoItem pedidoItem)
-        {
-            ValidarPedidoItemInexistente(pedidoItem);
-
-            _pedidoItems.Remove(pedidoItem);
-
-            CalcularValorPedido();
+            return validationResult;
         }
 
         public void CalcularValorTotalDesconto()
@@ -84,19 +45,19 @@ namespace NerdStore.Vendas.Domain
             decimal desconto = 0;
             var valor = ValorTotal;
 
-            if (Voucher.TipoDescontoVoucher == TipoDescontoVoucher.Valor)
+            if (Voucher.TipoDescontoVoucher == TipoDescontoVoucher.Porcentagem)
             {
-                if (Voucher.ValorDesconto.HasValue)
+                if (Voucher.PercentualDesconto.HasValue)
                 {
-                    desconto = Voucher.ValorDesconto.Value;
+                    desconto = (valor * Voucher.PercentualDesconto.Value) / 100;
                     valor -= desconto;
                 }
             }
             else
             {
-                if (Voucher.PercentualDesconto.HasValue)
+                if (Voucher.ValorDesconto.HasValue)
                 {
-                    desconto = (ValorTotal * Voucher.PercentualDesconto.Value) / 100;
+                    desconto = Voucher.ValorDesconto.Value;
                     valor -= desconto;
                 }
             }
@@ -107,13 +68,18 @@ namespace NerdStore.Vendas.Domain
 
         public void CalcularValorPedido()
         {
-            ValorTotal = PedidoItems.Sum(i => i.CalcularValor());
+            ValorTotal = PedidoItems.Sum(p => p.CalcularValor());
             CalcularValorTotalDesconto();
         }
 
         public bool PedidoItemExistente(PedidoItem item)
         {
             return _pedidoItems.Any(p => p.ProdutoId == item.ProdutoId);
+        }
+
+        private void ValidarPedidoItemInexistente(PedidoItem item)
+        {
+            if (!PedidoItemExistente(item)) throw new DomainException("O item não pertence ao pedido");
         }
 
         private void ValidarQuantidadeItemPermitida(PedidoItem item)
@@ -128,9 +94,51 @@ namespace NerdStore.Vendas.Domain
             if (quantidadeItems > MAX_UNIDADES_ITEM) throw new DomainException($"Máximo de {MAX_UNIDADES_ITEM} unidades por produto.");
         }
 
-        private void ValidarPedidoItemInexistente(PedidoItem item)
+        public void AdicionarItem(PedidoItem item)
         {
-            if (!PedidoItemExistente(item)) throw new DomainException("O item não pertence ao pedido");
+            ValidarQuantidadeItemPermitida(item);
+
+            item.AssociarPedido(Id);
+
+            if (PedidoItemExistente(item))
+            {
+                var itemExistente = _pedidoItems.FirstOrDefault(p => p.ProdutoId == item.ProdutoId);
+                itemExistente.AdicionarUnidades(item.Quantidade);
+                item = itemExistente;
+
+                _pedidoItems.Remove(itemExistente);
+            }
+
+            _pedidoItems.Add(item);
+            CalcularValorPedido();
+        }
+
+        public void RemoverItem(PedidoItem item)
+        {
+            ValidarPedidoItemInexistente(item);
+
+            _pedidoItems.Remove(item);
+            CalcularValorPedido();
+        }
+
+        public void AtualizarItem(PedidoItem item)
+        {
+            ValidarQuantidadeItemPermitida(item);
+            ValidarPedidoItemInexistente(item);
+            item.AssociarPedido(Id);
+
+            var itemExistente = PedidoItems.FirstOrDefault(p => p.ProdutoId == item.ProdutoId);
+
+            _pedidoItems.Remove(itemExistente);
+            _pedidoItems.Add(item);
+
+            CalcularValorPedido();
+        }
+
+        public void AtualizarUnidades(PedidoItem item, int unidades)
+        {
+            item.AtualizarUnidades(unidades);
+            AtualizarItem(item);
         }
 
         public void TornarRascunho()
