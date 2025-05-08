@@ -88,6 +88,7 @@ namespace NerdStore.WebApp.Tests
             Assert.Contains("Passwords must have at least one uppercase (&#x27;A&#x27;-&#x27;Z&#x27;).", responseString);
         }
 
+        // Se rodar esse teste isolado, dará erro. Rodar todos os testes. Rodara de acordo com o TestPriority
         [Fact(DisplayName = "Realizar login com sucesso"), TestPriority(2)]
         [Trait("Categoria", "Integração Web - Usuário")]
         public async Task Usuario_RealizarLogin_DeveExecutarComSucesso()
