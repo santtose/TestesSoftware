@@ -1,4 +1,4 @@
-# Exemplos práticos de testes de software abordados durante o curso desenvolvedor.io.
+# Exemplos práticos de testes de software abordados durante o curso Dominando os Testes de Software da plataforma desenvolvedor.io.
 
 -  Exemplos de testes de unidade, TDD e de integração. Estão divididos em pastas de acordo.
 
