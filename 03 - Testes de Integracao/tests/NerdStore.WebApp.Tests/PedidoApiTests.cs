@@ -24,7 +24,7 @@ namespace NerdStore.WebApp.Tests
             // Arrange
             var itemInfo = new ItemViewModel
             {
-                Id = new Guid("6ecaaa6b-ad9f-422c-b3bb-6013ec27c4bb"),
+                Id = new Guid("a03aefe5-3b75-458f-92a7-e249669caa9b"),
                 Quantidade = 2
             };
 
@@ -43,7 +43,7 @@ namespace NerdStore.WebApp.Tests
         public async Task RemoverItem_PedidoExistente_DeveRetornarComSucesso()
         {
             // Arrange
-            var produtoId = new Guid("191ddd3e-acd4-4c3b-ae74-8e473993c5da");
+            var produtoId = new Guid("a03aefe5-3b75-458f-92a7-e249669caa9b");
             await _testsFixture.RealizarLoginApi();
             _testsFixture.Client.AtribuirToken(_testsFixture.UsuarioToken);
 
